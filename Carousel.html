@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>carousel</title>
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-decoration: none;
+}
+.carousel{
+  position: relative;
+  border: 1px solid;
+  width: 310px;
+  height: 206px;
+  overflow: hidden;
+}
+.carousel .img-ct{
+  position: absolute;
+  width: 1240px;
+  overflow: hidden;
+}
+.carousel .img-ct img{
+    width: 310px;
+  height: 206px;
+}
+.carousel .img-ct>li{
+  float: left;
+}
+.carousel .img-ct:after{
+  content:" ";
+  display: block;
+  clear: both;
+}
+.carousel .arrow {
+  position: absolute;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  top: 50%;
+  margin-top: -10px;
+  line-height: 20px;
+  color:#fff;
+  text-align: center;
+  text-decoration: none;
+  z-index:55;
+  
+}
+.carousel .arrow:hover{
+  opacity: 0.8;
+}
+.carousel .pre{
+  left: 10px;
+}
+.carousel .next {
+  right: 10px;
+}
+.carousel .bullet{
+  width:100%;
+ 
+  position: absolute;
+  z-index: 1;
+  bottom: 10px;
+  text-align: center;
+}
+.carousel .bullet> li{
+  display: inline-block;
+  width:30px;
+  height: 5px;
+  border: 1px solid #fff;
+  cursor: pointer;
+}
+.carousel .bullet>li.active{
+  background-color:#ccc;
+}
+
+  </style>
+</head>
+<body>
+<div class="carousel">
+  <ul class="img-ct">
+    <li data-num=0><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/26.jpg" alt=""></a></li>
+     <li data-num=1><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/25.jpg" alt=""></a></li>
+     <li data-num=2><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/24.jpg" alt=""></a></li>
+     <li data-num=3><a href="#"><img src="http://cdn.jirengu.com/book.jirengu.com/img/23.jpg" alt=""></a></li>
+  </ul>
+  <a href="#" class="pre arrow"><</a>
+  <a href="#" class="next arrow">></a>
+  <ul class="bullet">
+    <li class="active"></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+</div>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script>
+    var $imgCt = $('.carousel .img-ct')
+var $imgs = $('.carousel .img-ct>li')
+var $preBtn = $('.carousel .pre')
+var $nextBtn = $('.carousel .next')
+var $bullets = $('.carousel .bullet li')
+var imgCount = $imgs.length
+var imgWidth = $imgs.width()
+var pageIndex = 0
+
+$imgCt.append($imgs.first().clone());
+$imgCt.prepend($imgs.last().clone());
+$imgCt.width((imgCount + 2)*imgWidth);
+$imgCt.css({left:-imgWidth});
+
+
+$preBtn.on("click",function(){
+	playPre(1);
+});
+$nextBtn.on("click",function(){
+	playNext(1);
+});
+
+function playNext(len){
+  
+  
+  $imgCt.animate({
+    left: "-=" + len*imgWidth
+  },function(){
+    pageIndex +=len;
+    if( imgCount === pageIndex){
+      pageIndex = 0
+      $imgCt.css({left:-imgWidth})
+    }
+    setBullet()
+ 
+  });
+  
+}
+
+function playPre(len){
+  
+  
+  $imgCt.animate({
+    left: "+=" + len*imgWidth
+  },function(){
+    pageIndex -=len;
+    if(pageIndex < 0){
+      pageIndex = imgCount-1
+      $imgCt.css({left:-imgWidth*imgCount})
+    }
+    setBullet()
+   
+  });
+  
+}
+
+
+function setBullet(){	$bullets.removeClass("active").eq(pageIndex).addClass("active");
+}
+
+$bullets.on("click",function(){
+			var index = $(this).index();
+			if (index > pageIndex) {
+				playNext(index - pageIndex);
+			} else if (index < pageIndex){
+				playPre(pageIndex - index);
+			}
+});
+
+</script>
+</body>
+</html>
